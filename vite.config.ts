@@ -20,6 +20,6 @@ export default defineConfig(({ command }) => ({
     alias: { "@": path.resolve(__dirname, "src") },
   },
   build: { outDir: "dist" },
-  server: { host: true },
+  server: { host: true, allowedHosts: true },
   command,
 }));
