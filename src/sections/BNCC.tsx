@@ -11,19 +11,19 @@ import {
 } from "framer-motion";
 import {
   ArrowRight,
-  Award,
+  ArrowUpRight,
+  BookOpen,
   Check,
   ChevronLeft,
   ChevronRight,
   Crosshair,
   Expand,
-  Eye,
   EyeOff,
-  Flag,
   GraduationCap,
-  HeartHandshake,
-  MapPin,
+  ScanEye,
   Shield,
+  Sparkles,
+  Users,
   X,
 } from "lucide-react";
 import { profile } from "../data";
@@ -41,31 +41,33 @@ const COMMANDS = [
 ];
 
 const GRADES = [
-  { name: "Inspection", desc: "Original colour, lifted a touch", filter: "saturate(1.05) contrast(1.05)" },
+  { name: "Inspection", desc: "Clean and true — ready to inspect", filter: "saturate(1.05) contrast(1.05)" },
   { name: "Parade", desc: "Black & white, hard contrast", filter: "grayscale(1) contrast(1.15) brightness(1.05)" },
-  { name: "Service", desc: "Warm sepia, like a printed record", filter: "sepia(.45) saturate(1.3)" },
+  { name: "Record", desc: "Warm sepia, like a printed record", filter: "sepia(.45) saturate(1.3)" },
   { name: "Pride", desc: "Vivid — the reds & greens pushed", filter: "hue-rotate(-12deg) saturate(1.2)" },
 ];
 
-/* Markers on the photo (x/y in % of the 2048×1365 frame). */
+/* Inspecting-mode markers on the photo (x/y in % of the 2048×1365 frame). */
 const NOTES = [
-  { x: 9.5, y: 13, label: "The cadet", detail: "Red beret, eyes front" },
+  { x: 9.5, y: 13, label: "Me — student cadet", detail: "Red beret, eyes front" },
   { x: 17, y: 44, label: "BNCC crest", detail: "Worn on the sleeve" },
-  { x: 41, y: 79, label: "The handshake", detail: "Greeting the inspecting officer" },
-  { x: 80, y: 24, label: "Inspecting officer", detail: "Reviewing the line" },
+  { x: 41, y: 79, label: "Inspection handshake", detail: "Firm, respectful, eyes up" },
+  { x: 80, y: 24, label: "Inspecting officer", detail: "Reviewing the cadet line" },
 ];
 
+/* BNCC's official motto is "Knowledge & Discipline" (bncc.gov.bd) — the
+   training builds leadership, discipline and self-confidence in students. */
 const VALUES = [
-  { n: "01", icon: HeartHandshake, title: "Service", desc: "Showing up for the team before showing up for myself." },
+  { n: "01", icon: BookOpen, title: "Knowledge", desc: "Learning drill, teamwork and leadership — lessons I carry back to class." },
   { n: "02", icon: Crosshair, title: "Discipline", desc: "Drill, study, code — the same standard every single day." },
-  { n: "03", icon: Flag, title: "Pride", desc: "Representing my school, my family and my hometown." },
+  { n: "03", icon: Users, title: "Leadership", desc: "Standing tall with my team, learning to lead with confidence." },
 ];
 
 const FILE_FACTS = [
   { icon: Shield, label: "Corps", value: "BNCC" },
-  { icon: GraduationCap, label: "Unit", value: "JCPSC · Class 10" },
-  { icon: MapPin, label: "Base", value: "Sylhet, Bangladesh" },
-  { icon: Award, label: "Values", value: "Service · Discipline · Pride" },
+  { icon: GraduationCap, label: "School", value: "JCPSC · Class 10" },
+  { icon: Sparkles, label: "Pursuit", value: "My hobby" },
+  { icon: BookOpen, label: "Motto", value: "Knowledge & Discipline" },
 ];
 
 const FALLBACKS = ["/nirob/bncc.jpg", "/bncc.jpg", "nirob/bncc.jpg"];
@@ -103,11 +105,35 @@ function CadetPhoto({
   );
 }
 
-/* Numbered markers over the photo — only exact on 3:2 (uncropped) frames. */
-function PhotoNotes({ visible }: { visible: boolean }) {
+/* Inspecting mode: a viewfinder over the inspection-day photo — grid,
+   subject zones, a focus ring on the handshake, and numbered markers.
+   Coordinates are only exact on 3:2 (uncropped) frames. */
+function InspectionOverlay({ visible }: { visible: boolean }) {
   if (!visible) return null;
   return (
-    <div className="pointer-events-none absolute inset-0 z-10" aria-label="Photo notes">
+    <div className="pointer-events-none absolute inset-0 z-10" aria-label="Inspecting mode">
+      {/* rule-of-thirds grid */}
+      <span className="absolute bottom-0 left-1/3 top-0 w-px bg-white/10" />
+      <span className="absolute bottom-0 left-2/3 top-0 w-px bg-white/10" />
+      <span className="absolute left-0 right-0 top-1/3 h-px bg-white/10" />
+      <span className="absolute left-0 right-0 top-2/3 h-px bg-white/10" />
+
+      {/* subject zones */}
+      <span className="absolute rounded-md border border-[#00e676]/50" style={{ left: "0.5%", top: "2%", width: "58%", height: "95%" }}>
+        <span className="absolute left-2 top-1/2 -translate-y-1/2 rounded bg-[#00e676] px-1.5 py-1 font-mono text-[7px] font-bold uppercase tracking-[0.18em] text-ink [writing-mode:vertical-rl]">Cadet line</span>
+      </span>
+      <span className="absolute rounded-md border border-[#00e676]/50" style={{ left: "66%", top: "16%", width: "31%", height: "81%" }}>
+        <span className="absolute right-2 top-1/2 -translate-y-1/2 rounded bg-[#00e676] px-1.5 py-1 font-mono text-[7px] font-bold uppercase tracking-[0.18em] text-ink [writing-mode:vertical-rl]">Inspecting officer</span>
+      </span>
+
+      {/* focus ring on the handshake */}
+      <span className="absolute aspect-square w-[13%] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-dashed border-[#00e676]/70" style={{ left: "41%", top: "79%" }} />
+
+      {/* status */}
+      <span className="absolute left-1/2 top-[8%] hidden -translate-x-1/2 items-center gap-2 rounded-full border border-[#00e676]/40 bg-ink/60 px-3 py-1.5 font-mono text-[8px] uppercase tracking-[0.24em] text-[#00e676] backdrop-blur-sm sm:flex">
+        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#00e676]" /> Inspecting · Line review
+      </span>
+
       {NOTES.map((n, i) => {
         const align = n.x < 22 ? "left-0" : n.x > 72 ? "right-0" : "left-1/2 -translate-x-1/2";
         const vAlign = n.y > 70 ? "bottom-full mb-1" : "top-full mt-1";
@@ -166,16 +192,16 @@ function HologramCard() {
         <SiteImage file="hii.png" alt="Nirob crest" className="h-11 w-11 rounded-full object-cover ring-1 ring-white/30" loading="lazy" />
         <div className="min-w-0 flex-1">
           <p className="font-mono text-[8px] uppercase tracking-[0.22em] text-bone/50">Bangladesh National Cadet Corps</p>
-          <p className="font-display text-base font-extrabold leading-tight">BNCC CADET</p>
+          <p className="font-display text-base font-extrabold leading-tight">STUDENT CADET</p>
         </div>
         <Crosshair size={18} className="text-[#00e676]" />
       </div>
       <div className="relative mt-3 space-y-1.5 font-mono text-[9px] uppercase tracking-[0.14em]">
         {[
           ["Name", profile.fullName],
-          ["Unit", "JCPSC · Class 10"],
-          ["Role", "Cadet"],
-          ["Location", "Sylhet, BD"],
+          ["School", "JCPSC · Class 10"],
+          ["Pursuit", "Hobby · student cadet"],
+          ["Motto", "Knowledge & Discipline"],
         ].map(([k, v]) => (
           <div key={k} className="flex justify-between gap-3 border-b border-white/[0.06] pb-1">
             <span className="text-bone/40">{k}</span>
@@ -191,7 +217,7 @@ function HologramCard() {
             ))}
           </div>
           <p className="mt-2 flex items-center gap-1.5 font-mono text-[8px] uppercase tracking-[0.18em] text-[#00e676]">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#00e676]" /> On parade
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#00e676]" /> Student cadet · in training
           </p>
         </div>
         <span className="font-serif text-lg italic text-[#d8d6cf]">Nirob.</span>
@@ -230,7 +256,7 @@ export function BNCC() {
   const [hudOn, setHudOn] = useState(false);
   const [grade, setGrade] = useState(0);
   const [open, setOpen] = useState(false);
-  const [notes, setNotes] = useState(false);
+  const [inspecting, setInspecting] = useState(false);
 
   useMotionValueEvent(p, "change", (v) => {
     const i = Math.min(COMMANDS.length - 1, Math.max(0, Math.floor((v - 0.06) * 4.3)));
@@ -301,7 +327,7 @@ export function BNCC() {
 
           {/* opening cue */}
           <motion.div style={{ opacity: cueOpacity }} className="pointer-events-none absolute inset-x-0 top-[60%] z-10 flex flex-col items-center gap-2">
-            <span className="rounded-full border border-[#00e676]/30 bg-ink/50 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.4em] text-[#00e676] backdrop-blur-sm">Scroll to open frame</span>
+            <span className="rounded-full border border-[#00e676]/30 bg-ink/50 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.4em] text-[#00e676] backdrop-blur-sm">Scroll to inspect the frame</span>
             <motion.span animate={reduce ? undefined : { y: [0, 6, 0] }} transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }} className="h-6 w-px bg-[#00e676]/80" />
             <span className="relative h-px w-32 overflow-hidden bg-white/15">
               <motion.span style={{ scaleX: p }} className="absolute inset-0 origin-left bg-[#00e676]" />
@@ -343,11 +369,11 @@ export function BNCC() {
           {/* big display type */}
           <motion.div style={{ y: bigY, opacity: bigOpacity }} className="pointer-events-none absolute inset-x-0 top-[45%] z-[5] -translate-y-1/2 px-4 text-center">
             <h2 className="font-display text-[16vw] font-extrabold uppercase leading-[0.8] tracking-[-0.03em] text-transparent [-webkit-text-stroke:1.5px_rgba(236,235,230,0.75)] [filter:drop-shadow(0_6px_24px_rgba(0,0,0,0.7))] md:text-[11vw] md:[-webkit-text-stroke:2px_rgba(236,235,230,0.8)]">
-              SERVICE
+              PASSION
             </h2>
             <div className="mx-auto mt-2 h-px w-24 bg-[#00e676]/70 md:w-40" />
             <p className="mx-auto mt-3 max-w-[16rem] font-serif text-xl italic leading-tight text-bone sm:max-w-md sm:text-3xl md:text-4xl" style={{ textShadow: "0 2px 30px #000" }}>
-              Discipline, in and out of uniform.
+              My hobby in uniform — knowledge &amp; discipline.
             </p>
           </motion.div>
 
@@ -359,7 +385,7 @@ export function BNCC() {
             <div className="flex items-center justify-between gap-3 font-mono text-[9px] uppercase tracking-[0.2em]">
               <span className="text-[#00e676]">04 / Beyond the code</span>
               <span className="flex items-center gap-1.5 text-bone/50">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#00e676]" /> On parade
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#00e676]" /> My hobby
               </span>
             </div>
             <h3 className="mt-3 font-display text-3xl font-extrabold uppercase leading-[0.9] tracking-tight md:text-5xl">
@@ -367,9 +393,9 @@ export function BNCC() {
               <br />
               <span className="text-stroke">Cadet</span>
             </h3>
-            <p className="mt-2.5 text-xs leading-relaxed text-bone/70 md:text-[13px]">Proudly serving as a cadet of the Bangladesh National Cadet Corps at JCPSC — this is inspection day.</p>
+            <p className="mt-2.5 text-xs leading-relaxed text-bone/70 md:text-[13px]">Not my job or military service — BNCC is my <span className="text-bone">hobby</span>. As a Class 10 student cadet at JCPSC, I train because I love drill, teamwork and the parade ground.</p>
             <div className="mt-3 flex items-center gap-1.5">
-              {["Service", "Discipline", "Pride"].map((t) => (
+              {["My hobby", "Knowledge", "Discipline"].map((t) => (
                 <span key={t} className="rounded-full border border-white/15 px-2 py-1 font-mono text-[7px] uppercase tracking-[0.14em] text-bone/60">{t}</span>
               ))}
             </div>
@@ -454,7 +480,7 @@ export function BNCC() {
                 </div>
               </div>
               <div className="hidden flex-col items-end gap-1.5 font-mono text-[8px] uppercase tracking-[0.2em] text-bone/60 sm:flex">
-                {["Service", "Discipline", "Pride"].map((t) => (
+                {["Knowledge", "Discipline", "Leadership"].map((t) => (
                   <span key={t} className="flex items-center gap-1.5"><span className="h-1 w-1 rounded-full bg-[#00e676]" />{t}</span>
                 ))}
               </div>
@@ -468,10 +494,32 @@ export function BNCC() {
       <div className="relative mx-auto max-w-[1600px] px-5 pb-24 md:px-10 md:pb-32">
         <div className="grid gap-12 border-t border-white/10 pt-14 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
           <FadeUp>
-            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#00e676]">( Cadet record )</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#00e676]">( My hobby in uniform )</p>
             <p className="mt-5 font-display text-3xl font-bold leading-[1.15] tracking-tight md:text-5xl">
               “I always try to be a good student and work hard to achieve my goals — uniform on or off.”
             </p>
+            {/* what BNCC actually is */}
+            <div className="mt-8 max-w-xl rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+              <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-[#00e676]">What is BNCC?</p>
+              <p className="mt-2.5 text-sm leading-relaxed text-bone/75">
+                The Bangladesh National Cadet Corps trains school, college and university <span className="text-bone">students</span>. Its
+                motto is <span className="text-bone">“Knowledge &amp; Discipline”</span>, and the training builds leadership, discipline,
+                self-confidence and responsibility.
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-bone/75">
+                I&apos;m a school student cadet in training — <span className="text-bone">not a serving soldier</span>. For me BNCC is a
+                hobby I chose alongside my studies, and the photo below is from inspection day.
+              </p>
+              <a
+                href="https://bncc.gov.bd/overview/"
+                target="_blank"
+                rel="noreferrer"
+                className="group mt-3.5 inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.2em] text-bone/70 transition-colors hover:text-[#00e676] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#00e676]"
+              >
+                Learn more about BNCC · bncc.gov.bd
+                <ArrowUpRight size={12} className="transition-transform group-hover:rotate-45" />
+              </a>
+            </div>
             {/* cadet file */}
             <dl className="mt-8 grid max-w-xl grid-cols-2 gap-3">
               {FILE_FACTS.map((f) => (
@@ -501,7 +549,7 @@ export function BNCC() {
           </FadeUp>
 
           <FadeUp delay={0.15}>
-            <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.25em] text-mute">Field notes</p>
+            <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.25em] text-mute">What cadet training teaches me</p>
             <div className="grid gap-3">
               {VALUES.map((v) => (
                 <div key={v.n} className="group relative overflow-hidden rounded-2xl border border-white/10 p-5 transition-colors hover:border-[#00e676]/40">
@@ -534,7 +582,7 @@ export function BNCC() {
           <FadeUp>
             <figure className="relative overflow-hidden rounded-2xl border border-white/12 shadow-[0_40px_100px_-40px_rgba(0,0,0,.9)]">
               <CadetPhoto className="aspect-[3/2] w-full bg-panel" filter={activeGrade.filter} lazy />
-              <PhotoNotes visible={notes} />
+              <InspectionOverlay visible={inspecting} />
               <div className="absolute left-4 top-4 flex items-center gap-2">
                 <span className="rounded-full border border-white/20 bg-ink/60 px-3 py-1.5 font-mono text-[8px] uppercase tracking-[0.2em] text-bone/85 backdrop-blur">
                   Grade / <span className="text-[#00e676]">{activeGrade.name}</span>
@@ -545,19 +593,19 @@ export function BNCC() {
               </div>
               <button
                 type="button"
-                onClick={() => setNotes((s) => !s)}
-                aria-pressed={notes}
+                onClick={() => setInspecting((s) => !s)}
+                aria-pressed={inspecting}
                 className={`absolute right-4 top-4 flex items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-[8px] uppercase tracking-[0.18em] backdrop-blur transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#00e676] ${
-                  notes ? "border-[#00e676] bg-[#00e676] text-ink" : "border-white/25 bg-ink/55 text-bone/85 hover:border-[#00e676]/70"
+                  inspecting ? "border-[#00e676] bg-[#00e676] text-ink" : "border-white/25 bg-ink/55 text-bone/85 hover:border-[#00e676]/70"
                 }`}
               >
-                {notes ? <EyeOff size={12} /> : <Eye size={12} />} Photo notes
+                {inspecting ? <EyeOff size={12} /> : <ScanEye size={12} />} Inspecting mode
               </button>
               <figcaption className="absolute inset-x-0 bottom-0 flex flex-wrap items-end justify-between gap-3 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent p-4 pt-14 md:p-5 md:pt-16">
                 <div>
-                  <p className="font-mono text-[8px] uppercase tracking-[0.25em] text-[#00e676]">BNCC · Inspection day</p>
-                  <p className="font-serif text-xl italic text-bone md:text-2xl">“Service before self.”</p>
-                  {notes && <p className="mt-1 font-mono text-[8px] uppercase tracking-[0.18em] text-bone/55">Tap a marker to read the frame</p>}
+                  <p className="font-mono text-[8px] uppercase tracking-[0.25em] text-[#00e676]">My hobby in uniform · Inspection day</p>
+                  <p className="font-serif text-xl italic text-bone md:text-2xl">“Knowledge &amp; discipline.”</p>
+                  {inspecting && <p className="mt-1 font-mono text-[8px] uppercase tracking-[0.18em] text-bone/55">Inspecting mood — eyes front · uniform neat · handshake firm · tap a marker</p>}
                 </div>
                 <button
                   type="button"
@@ -641,12 +689,13 @@ export function BNCC() {
               style={{ transformPerspective: 1200, width: "min(64rem, 100%, 123svh)" }}
             >
               <CadetPhoto className="aspect-[2048/1365] w-full bg-panel" filter={activeGrade.filter} alt="Nirob BNCC cadet inspection, full frame" />
-              <PhotoNotes visible={notes} />
+              <InspectionOverlay visible={inspecting} />
               <div className="absolute inset-x-0 bottom-0 space-y-3 bg-gradient-to-t from-ink via-ink/60 to-transparent p-5 pt-14">
                 <div className="flex flex-wrap items-end justify-between gap-3">
                   <div>
-                    <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-[#00e676]">BNCC · Inspection day</p>
-                    <p className="font-serif text-2xl italic">“Service before self.”</p>
+                    <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-[#00e676]">My hobby in uniform · Inspection day</p>
+                    <p className="font-serif text-2xl italic">“Knowledge &amp; discipline.”</p>
+                    {inspecting && <p className="mt-1 font-mono text-[8px] uppercase tracking-[0.18em] text-bone/55">Inspecting mood — eyes front · uniform neat · handshake firm</p>}
                   </div>
                   <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-bone/60">
                     Grade / {activeGrade.name} · {pad(grade + 1)} / 04
@@ -681,6 +730,16 @@ export function BNCC() {
                     className="grid h-8 w-8 place-items-center rounded-full border border-white/25 transition-colors hover:border-[#00e676] hover:text-[#00e676] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#00e676]"
                   >
                     <ChevronRight size={15} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setInspecting((s) => !s)}
+                    aria-pressed={inspecting}
+                    className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-mono text-[8px] uppercase tracking-[0.16em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#00e676] ${
+                      inspecting ? "border-transparent bg-[#00e676] font-bold text-ink" : "border-white/25 text-bone/75 hover:border-[#00e676]/70 hover:text-bone"
+                    }`}
+                  >
+                    {inspecting ? <EyeOff size={12} /> : <ScanEye size={12} />} Inspecting mode
                   </button>
                   <span className="ml-auto hidden font-mono text-[8px] uppercase tracking-[0.18em] text-bone/40 md:block">← → grades · Esc to close</span>
                 </div>
