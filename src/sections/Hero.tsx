@@ -205,7 +205,7 @@ export function Hero({ ready }: { ready: boolean }) {
               <span className="font-bold">Web Developer </span>
               <span className="font-light italic text-gray-300">— <span className="hidden sm:inline">UI/UX & </span>motion</span>
             </p>
-            <p className="mt-1 hidden font-mono text-[9px] uppercase tracking-[0.2em] text-white/35 lg:block">Class 10 · BNCC Cadet</p>
+            <p className="mt-1 hidden font-mono text-[9px] uppercase tracking-[0.2em] text-white/35 lg:block">Class 10 · BNCC Student Cadet</p>
             <p className="mt-1.5 hidden font-mono text-[8px] uppercase tracking-[0.2em] text-white/25 lg:block">
               {pixelOk ? "Pixel portrait — hover my name to rebuild" : "Assembling the pixels…"}
             </p>

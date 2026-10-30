@@ -28,6 +28,12 @@ export function scrollToId(id: string) {
   else el.scrollIntoView({ behavior: "smooth" });
 }
 
+/** Smooth-scroll to an absolute page Y (into the middle of a tall section). */
+export function scrollToY(y: number) {
+  if (lenis) lenis.scrollTo(y, { duration: 1.4 });
+  else window.scrollTo({ top: y, behavior: "smooth" });
+}
+
 export function lockScroll(locked: boolean) {
   if (lenis) (locked ? lenis.stop() : lenis.start());
   document.documentElement.style.overflow = locked ? "hidden" : "";

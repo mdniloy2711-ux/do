@@ -5,7 +5,7 @@ import { ease } from "../lib";
 import { FadeUp, Label, SiteImage } from "../components/ui";
 
 const deck = [
-  { file: "bncc.jpg", title: "In uniform", sub: "BNCC Cadet · Service & discipline", tag: "01", color: "#e53935", fit: "cover" },
+  { file: "bncc.jpg", title: "In uniform", sub: "Student cadet · My hobby in uniform", tag: "01", color: "#e53935", fit: "cover" },
   { file: "photo.jpg", title: "Beyond the frame", sub: "Photography · See the world differently", tag: "02", color: "#f4f2ec", fit: "cover" },
   { file: "nb.jpg", title: "NIROB in motion", sub: "Animation showcase · The build", tag: "03", color: "#f4b93e", fit: "cover" },
   { file: "yes.jpg", title: "The developer", sub: "Portrait · Sylhet, Bangladesh", tag: "04", color: "#f4f2ec", fit: "cover" },

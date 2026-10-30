@@ -8,7 +8,7 @@ export const profile = {
   hometown: "Tahirpur, Sunamganj",
   languages: "Bangla (Native), English (Fluent)",
   nationality: "Bangladeshi",
-  interests: "Web Development, UI/UX Design, Free Fire E-Sports, Photography",
+  interests: "Web Development, UI/UX Design, BNCC Cadet Training, Photography, Cycling, Free Fire E-Sports",
   tagline:
     "A passionate web developer and designer creating modern, responsive websites with cutting-edge technologies.",
   roles: ["Web Developer", "UI/UX Designer", "Frontend Developer", "Student", "Freelancer"],
@@ -53,11 +53,11 @@ export const stats = [
 ];
 
 export const story = (age: number) => [
-  `Hi! My name is Nirob, and I'm ${age} years old. I am now reading in class 10 at JCPSC and proudly serve as a BNCC cadet. I always try to be a good student and work hard to achieve my goals. I come from Tahirpur, Sunamganj, a place I'm really proud of.`,
-  "My hobbies are photography and cycling, which help me see the world from new perspectives and enjoy nature. My biggest dream is to become an engineer and travel the world to explore new places and learn new things. I believe that with hard work and dedication, I can make all my dreams come true.",
+  `Hi! My name is Nirob, and I'm ${age} years old. I am now reading in class 10 at JCPSC, where BNCC cadet training is my hobby as a student cadet. I always try to be a good student and work hard to achieve my goals. I come from Tahirpur, Sunamganj, a place I'm really proud of.`,
+  "My hobbies are BNCC cadet training, photography and cycling, which teach me discipline and help me see the world from new perspectives. My biggest dream is to become an engineer and travel the world to explore new places and learn new things. I believe that with hard work and dedication, I can make all my dreams come true.",
 ];
 
-export const traits = ["BNCC Cadet", "Photography", "Cycling", "Future Engineer", "World Traveller", "E-Sports"];
+export const traits = ["Student Cadet", "Photography", "Cycling", "Future Engineer", "World Traveller", "E-Sports"];
 
 export const clips = [
   {
